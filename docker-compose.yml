@@ -33,12 +33,12 @@ services:
       DB_USER: academic_user
       DB_PASS: academic_pass
       APP_NAME: Academic Research Scraper
-      BASE_URL: http://localhost:8080/
+      BASE_URL: http://localhost:8081/
       API_URL: http://backend:8000
       API_KEY: "${API_KEY}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
       GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
-      GOOGLE_REDIRECT_URI: http://localhost:8080/auth/google/callback
+      GOOGLE_REDIRECT_URI: http://localhost:8081/auth/google/callback
     volumes:
       - ./KP-Penelitian-Dosen:/var/www/html
     networks:
