@@ -19,9 +19,7 @@ services:
       - academic_network
 
   frontend:
-    build:
-      context: ./KP-Penelitian-Dosen
-      dockerfile: Dockerfile
+    image: aprnna/academic-frontend:latest
     container_name: academic_frontend
     restart: unless-stopped
     ports:
@@ -47,9 +45,7 @@ services:
       - academic_network
 
   backend:
-    build:
-      context: ./KP-Backend
-      dockerfile: Dockerfile
+    image: aprnna/academic-backend:latest
     container_name: academic_scraper
     restart: unless-stopped
     ports:
