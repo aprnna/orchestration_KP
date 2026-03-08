@@ -1,0 +1,6 @@
+[submodule "KP-Backend"]
+	path = KP-Backend
+	url = git@github.com:aprnna/KP-Backend.git
+[submodule "KP-Penelitian-Dosen"]
+	path = KP-Penelitian-Dosen
+	url = git@github.com:aprnna/KP-Penelitian-Dosen.git
