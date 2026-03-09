@@ -5,6 +5,8 @@ services:
     image: mysql:8.0
     container_name: academic_mysql
     restart: unless-stopped
+    tty: true
+    stdin_open: true
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: academic_db
@@ -22,6 +24,8 @@ services:
     image: aprnna/academic-frontend:latest
     container_name: academic_frontend
     restart: unless-stopped
+    tty: true
+    stdin_open: true
     ports:
       - "8081:80"
     depends_on:
@@ -46,6 +50,8 @@ services:
     image: aprnna/academic-backend:latest
     container_name: academic_scraper
     restart: unless-stopped
+    tty: true
+    stdin_open: true
     ports:
       - "8000:8000"
     depends_on:
