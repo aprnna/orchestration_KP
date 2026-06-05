@@ -1,0 +1,47 @@
+# Agent Context & Project Rules
+
+This file provides context and rules for AI agents operating within the `academic-system` workspace.
+
+## 1. Project Overview
+The `academic-system` is a microservices application consisting of a PHP Frontend (`KP-Penelitian-Dosen`), a Python/FastAPI Backend (`KP-Backend`), and a MySQL database orchestration. The system scrapes academic publication data from Crossref and OpenAlex, stores it, and presents it via a web UI.
+
+## 2. Directory Structure
+- `/KP-Backend`: Python FastAPI project using `uv`. Handles data scraping and API endpoints.
+- `/KP-Penelitian-Dosen`: Custom PHP MVC project without Composer. Handles user interface and dashboard.
+- `/docker-compose.yml`: Root orchestrator for `frontend`, `backend`, and `mysql` containers.
+
+## 3. Technology Stack & Rules
+
+### A. Backend (`KP-Backend`)
+- **Language/Framework**: Python 3.10+, FastAPI.
+- **Dependency Management**: Use `uv` command line (`uv run`, `uv sync`, `uv add`). Do not use `pip` natively if `uv` is available.
+- **ORM**: SQLAlchemy 2.0+ (Async).
+- **Style/Linting**: Follow standard PEP8, enforced by `ruff`. Use type hints extensively.
+- **Async**: Always use asynchronous I/O (`httpx`, `aiomysql`) for external API calls and database operations to avoid blocking the event loop.
+
+### B. Frontend (`KP-Penelitian-Dosen`)
+- **Language/Framework**: Raw PHP 8+ using a Custom MVC framework.
+- **Architecture**:
+  - Models go in `app/models/`.
+  - Controllers go in `app/controllers/`.
+  - Views go in `app/views/` and are raw PHP templates.
+  - Routing is configured in `routes/web.php`.
+- **Styling**: Uses custom CSS/Tailwind (adhere to existing designs). Do not introduce new heavy CSS frameworks unless instructed. native CSS/JS should be optimized.
+- **Dependencies**: No Composer used. Core framework files live in `app/core/`. Modify with caution as they affect the global router and database wrapper.
+
+### C. Docker & Infrastructure
+- The container network is `academic_network`.
+- From the frontend, the backend is accessible at `http://backend:8000`.
+- The MySQL database is accessible at `mysql` (port 3306) internally.
+- Avoid committing secrets. Always reference `.env.example` when discussing environment variables.
+
+## 4. Development Workflow
+1. When proposing a change, identify whether it belongs to the frontend (UI/display/auth logic) or backend (scraping logic/API/cron jobs).
+2. Database schema changes must be synchronized. If a migration is needed, ensure the SQL schema files (`KP-Penelitian-Dosen/database/schema.sql` or related ORM models) are updated for future deployments.
+3. Test backend changes using `uv run pytest`.
+4. Ensure cross-origin resource sharing (CORS) rules on the backend permit requests from the exact frontend base URL in production configurations.
+
+## 5. AI Assistant Behaviors
+- **Contextual Awareness**: Before editing routing or controllers in PHP, read `app/core/Router.php` to understand the internal routing mechanism.
+- **Tooling Preference**: Prefer `grep_search` and code view tools to understand the custom PHP MVC before guessing standard framework structures (like Laravel).
+- **Communication**: Explain which subsystem your changes affect (Frontend vs Backend) when providing summaries. Provide accurate, copy-pasteable execution commands relying on `docker compose` or `uv`.

@@ -2,20 +2,26 @@ version: "3.9"
 
 services:
   mysql:
-    image: aprnna/academic-mysql:latest
+    image: mysql:8.0
     container_name: academic_mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: academic_db
+      MYSQL_DATABASE: kp_scrapping
       MYSQL_USER: academic_user
       MYSQL_PASSWORD: academic_pass
     ports:
       - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./KP-Backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     networks:
       - academic_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     image: aprnna/academic-frontend:latest
@@ -24,11 +30,12 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: academic_db
+      DB_NAME: kp_penelitian_dosen
       DB_USER: academic_user
       DB_PASS: academic_pass
       APP_NAME: Academic Research Scraper
@@ -48,24 +55,24 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: academic_db
+      DB_NAME: kp_scrapping
       DB_USER: academic_user
       DB_PASSWORD: academic_pass
       API_KEY: "${API_KEY}"
       SCHEDULER_ENABLED: true
       SCRAPE_DAY_OF_MONTH: 1
-      YEAR_START: 2021
-      YEAR_END: 2026
-      FILTER_UNIKOM: true
       ALLOWED_HOSTS: "*"
       ALLOWED_ORIGINS: "*"
       APP_NAME: Academic Research Scraper
       ENVIRONMENT: production
       LOG_LEVEL: INFO
+    volumes:
+      - ./KP-Backend/app:/app/app:ro
     networks:
       - academic_network
 
